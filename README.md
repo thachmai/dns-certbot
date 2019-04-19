@@ -1,10 +1,10 @@
 # Painless letsencrypt TLS certificate via DNS challenge
 
-This docker image simplifies the process of obtaining and renewing TLS certificates with [https://letsencrypt.org](letsencrypt). It works with both single domain certificate and [https://en.wikipedia.org/wiki/Wildcard_certificate](wildcard certificate).
+This docker image simplifies the process of obtaining and renewing TLS certificates with [letsencrypt](https://letsencrypt.org). It works with both single domain certificate and [wildcard certificate](https://en.wikipedia.org/wiki/Wildcard_certificate).
 
-By using the service provided by [https://github.com/joohoi/acme-dns](acme-dns), you will no longer need to modify the DNS record for each ACME challenge. Thus, the TLS obtention/renewal process becomes *simpler*, *automated* and *safer*.
+By using the service provided by [acme-dns](https://github.com/joohoi/acme-dns), you will no longer need to modify the DNS record for each ACME challenge. Thus, the TLS obtention/renewal process becomes *simpler*, *automated* and *safer*.
 
-For more information on the technical details, please refer to [https://www.thachmai.info/2019/04/18/painless-free-letsencrypt-wildcard/](my blog post).
+For more information on the technical details, please refer to [my blog post](https://www.thachmai.info/2019/04/18/painless-letsencrypt-wildcard/).
 
 ## To obtain a wildcard certificate for the domain `*.demo.tested.science*`
 ### 1. Generate the challenge
