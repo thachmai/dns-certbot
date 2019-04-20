@@ -7,45 +7,31 @@ By using the service provided by [acme-dns](https://github.com/joohoi/acme-dns),
 For more information on the technical details, please refer to [my blog post](https://www.thachmai.info/2019/04/18/painless-letsencrypt-wildcard/).
 
 ## To obtain a wildcard certificate for the domain `*.demo.tested.science*`
-### 1. Generate the challenge
+### 1. Generate the DNS challenge
 ```bash
-$ docker run -it -v /etc/letsencrypt:/etc/letsencrypt thachmai/dns-certbot certonly -d '*.demo.tested.science'
+$ docker run -it --rm -v /etc/letsencrypt:/etc/letsencrypt thachmai/dns-certbot certonly -d '*.demo.tested.science'
 ```
-The command should terminate with error
+The command should prompt you to add a CNAME record to your DNS:
 ```
 Output from acme-dns-auth.py:
 Please add the following CNAME record to your main DNS zone:
 _acme-challenge.demo.tested.science CNAME 5456708c-6c6f-4fd2-a3d4-fb9384aa8121.auth.acme-dns.io.
-
-Waiting for verification...
-Cleaning up challenges
-Failed authorization procedure. demo.tested.science (dns-01): urn:ietf:params:acme:error:dns :: DNS problem: NXDOMAIN looking up TXT for _acme-challenge.demo.tested.science 
 ```
 
 ### 2. Add the DNS CNAME record
-Follow the instruction given by `acme-dns-auth.py`: add a CNAME record for `_acme-challenge.demo.tested.science` pointing to `5456708c-6c6f-4fd2-a3d4-fb9384aa8121.auth.acme-dns.io.` (don't forget the ending `.`). The CNAME record can take a few minutes to propagate. Verify its progapation with:
+In another shell, follow the instruction given by `acme-dns-auth.py`: add a CNAME record for `_acme-challenge.demo.tested.science` pointing to `5456708c-6c6f-4fd2-a3d4-fb9384aa8121.auth.acme-dns.io.` (don't forget the ending `.`). The CNAME record can take a few minutes to propagate.
+
+Verify the DNS progation status with:
 ```bash
 $ dig +short @1.1.1.1 _acme-challenge.demo.tested.science txt
 5456708c-6c6f-4fd2-a3d4-fb9384aa8121.auth.acme-dns.io.
 "lW0fReLNphoPs7eQyMK0UEksj5WpUZrlR8ijyiWnzxA"
 ```
-If `dig` doesn't return any value, you should wait until the DNS value is progapaged.
+If `dig` doesn't return any value, it usually means that the CNAME value hasn't been progated. You should retry the `dig` command again after a few minutes until it returns a value.
 
-### 3. Generate the certificate
-Rerun the first command
-```bash
-$ docker run -it -v /etc/letsencrypt:/etc/letsencrypt thachmai/dns-certbot certonly -d '*.demo.tested.science'
+### 3. Finish the DNS challenge
+Return to the `dns-certbot` shell and hit <ENTER> to terminate the challenge.
 ```
-This time, the command should terminate successfully
-```
-Saving debug log to /var/log/letsencrypt/letsencrypt.log
-Plugins selected: Authenticator manual, Installer None                                                                                                                                       
-Obtaining a new certificate
-Performing the following challenges:
-dns-01 challenge for test.tested.science
-Waiting for verification...
-Cleaning up challenges
-
 IMPORTANT NOTES:
  - Congratulations! Your certificate and chain have been saved at:
    /etc/letsencrypt/live/test.tested.science/fullchain.pem
@@ -57,11 +43,16 @@ IMPORTANT NOTES:
    "certbot renew"
 ```
 
-## Certificate and config location
-The certificates and configuration are stored in `/etc/letsencrypt`, you'll need root access.
-
-## Renew the certificate
+### 4. Renew the certificate
 ```bash
 $ docker run --rm -it -v /etc/letsencrypt:/etc/letsencrypt thachmai/dns-certbot renew
 ```
 You should run that command in a cron daily job.
+
+## Certificate and config location
+The certificates and configuration are stored in `/etc/letsencrypt`, you'll need root access.
+
+
+## Simpler usage with shell alias
+If you use the command often, a shell alias 
+`alias dns-certbot='docker run -it --rm -v /etc/letsencrypt:/etc/letsencrypt thachmai/dns-certbot'`
