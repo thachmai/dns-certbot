@@ -14,9 +14,9 @@ RUN echo "### 1) configure tzdata to avoid interactive prompts ###" && \
     chmod 0700 /usr/local/bin/acme-dns-auth.py 
 
 # "--debug-challenges" is need for the auth-hook to pause: https://github.com/joohoi/acme-dns-certbot-joohoi#usage
-ENTRYPOINT ["/usr/bin/certbot",
-           "--manual", "--manual-auth-hook", "/usr/local/bin/acme-dns-auth.py",
-           "--debug-challenges",
-           "--preferred-challenges", "dns",
-           "--agree-tos", "--manual-public-ip-logging-ok",
+ENTRYPOINT ["/usr/bin/certbot", \
+           "--manual", "--manual-auth-hook", "/usr/local/bin/acme-dns-auth.py", /
+           "--debug-challenges", /
+           "--preferred-challenges", "dns", /
+           "--agree-tos", "--manual-public-ip-logging-ok", /
            "--server", "https://acme-v02.api.letsencrypt.org/directory"]
