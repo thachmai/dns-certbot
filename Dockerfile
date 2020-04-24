@@ -1,4 +1,4 @@
-FROM ubuntu:18.04
+FROM ubuntu:20.04
 MAINTAINER contact@thachmai.info
 
 RUN echo "### 1) configure tzdata to avoid interactive prompts ###" && \
